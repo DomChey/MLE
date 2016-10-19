@@ -79,13 +79,14 @@ public class HillClimber {
 			int[] copyOldTravel = Arrays.copyOf(towns, towns.length);
 			swapTowns();
 			int newFitness = calculateFitness();
+			System.out.println("Last Fitness: " + lastFitness);
+			System.out.println("New Fitness: " + newFitness);
 			if (newFitness < lastFitness){
 				lastFitness = newFitness;
+				System.out.println("Changed Fitness");
 			} else {
 				towns = Arrays.copyOf(copyOldTravel, copyOldTravel.length);
 			}
-			System.out.println("New Fitness: " + newFitness);
-			System.out.println("Last Fitness: " + lastFitness);
 		}
 	}
 

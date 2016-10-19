@@ -16,22 +16,28 @@ public class SimulatedAnnealing {
 			int[] copyOldTravel = Arrays.copyOf(HillClimber.towns, HillClimber.towns.length);					
 			HillClimber.swapTowns();
 			int newFitness = HillClimber.calculateFitness();
+			
+			System.out.println("Last Fitness: " + lastFitness);
+			System.out.println("New Fitness: " + newFitness);
 					
 			double probability = calcProbability(newFitness, lastFitness);	
 			double random = Math.random();
 			
-			if (newFitness < lastFitness || probability > random)
+			if (newFitness < lastFitness) 
 			{
 				lastFitness = newFitness;
 			} 
+			else if (probability > random){
+
+				System.out.println("Random: " + random);
+				System.out.println("Probability: " + probability);
+				lastFitness = newFitness;
+			}
 			else 
 			{
 				HillClimber.towns = Arrays.copyOf(copyOldTravel, copyOldTravel.length);
 			}
-			
-			System.out.println("Random: " + random);
-			System.out.println("New Fitness: " + newFitness);
-			System.out.println("Last Fitness: " + lastFitness);
+
 			
 			temperatur = temperatur - epsilon;
 		}
@@ -39,9 +45,7 @@ public class SimulatedAnnealing {
 	
 	public static double calcProbability(int newFitness, int oldFitness) {
 		double result;		
-		result = Math.exp((newFitness - oldFitness) / temperatur);
-		System.out.println("Probability: " + result);
-		
+		result = Math.exp(((newFitness - oldFitness)* (-1)) / temperatur);		
 		return result;
 	}
 

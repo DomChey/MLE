@@ -129,47 +129,32 @@ public class MNISTReader extends JFrame {
 
 	public void activateForward(double in[], double w[][], double out[]) {
 
-		for (int i = 0; i < in.length; i++) {
-			for (int j = 0; j < in.length; j++) {
-				out[i] = out[i] + w[i][j] * in[i];
-			}
-			out[i] = 1 / (1 + Math.exp(out[i]*(-1)));
-		}
-
-		// for (int i=0; i< out.length; i++){
-		// System.out.println(out[i]);
-		// }
-
+//		for (int i = 0; i < in.length; i++) {
+//			for (int j = 0; j < in.length; j++) {
+//				out[i] = out[i] + w[i][j] * in[i];
+//			}
+//			out[i] = 1 / (1 + Math.exp(out[i]*(-1)));
+//		}
 	}
 
 	public void activateReconstruction(double rec[], double w[][], double out[]) {
 
-		for (int i = 0; i < out.length; i++) {
-			for (int j = 0; j < rec.length; j++) {
-				rec[i] = rec[i] + w[i][j] * out[i];
-			}
-			rec[i] = 1 / (1 + Math.exp(rec[i]*(-1)));
-		}
+//		for (int i = 0; i < out.length; i++) {
+//			for (int j = 0; j < rec.length; j++) {
+//				rec[i] = rec[i] + w[i][j] * out[i];
+//			}
+//			rec[i] = 1 / (1 + Math.exp(rec[i]*(-1)));
+//		}
 	}
 
 	public void contrastiveDivergence(double inp[], double out[], double rec[], double w[][]) {
-		for (int i = 0; i < w.length; i++) {
-			for (int j = 0; j < w[i].length; j++) {
-				w[i][j] = w[i][j] + ((out[i] * inp[i]) - (out[i] * rec[i]));
-				
-			}
-		}
-//		print2DArray(w);
-	}
-
-	public static void print2DArray(double[][] input) {
-		for (int i = 0; i < input.length; i++) {
-			for (int j = 0; j < input.length; j++) {
-				double dingens = input[i][j];
-				System.out.printf("%5d ", dingens);
-			}
-			System.out.println();
-		}
+		
+//		for (int i = 0; i < w.length; i++) {
+//			for (int j = 0; j < w[i].length; j++) {
+//				w[i][j] = w[i][j] + ((out[i] * inp[i]) - (out[i] * rec[i]));
+//				
+//			}
+//		}
 	}
 
 	void trainOrTestNet(boolean train, int maxCount, MNISTReader frame) {

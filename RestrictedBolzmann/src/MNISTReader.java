@@ -34,7 +34,7 @@ public class MNISTReader extends JFrame {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
 				int c = (int) (input[i++]);
 				if (c > 0.0) {
-					g.setColor(Color.blue);
+					g.setColor(Color.green);
 				} else {
 					g.setColor(Color.black);
 				}
@@ -45,7 +45,7 @@ public class MNISTReader extends JFrame {
 		for (int t = 0; t < 10; t++) {
 			int c = (int) (input[i++]);
 			if (c > 0.0) {
-				g.setColor(Color.blue);
+				g.setColor(Color.green);
 			} else {
 				g.setColor(Color.black);
 			}
@@ -56,7 +56,7 @@ public class MNISTReader extends JFrame {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
 				int c = (int) (output[i++] + 0.5);
 				if (c > 0.0) {
-					g.setColor(Color.blue);
+					g.setColor(Color.green);
 				} else {
 					g.setColor(Color.black);
 				}
@@ -67,7 +67,7 @@ public class MNISTReader extends JFrame {
 		for (int t = 0; t < 10; t++) {
 			int c = (int) (output[i++] + 0.5);
 			if (c > 0.0) {
-				g.setColor(Color.blue);
+				g.setColor(Color.green);
 			} else {
 				g.setColor(Color.black);
 			}
@@ -78,7 +78,7 @@ public class MNISTReader extends JFrame {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
 				int c = (int) (reconstructed_input[i++] + 0.5);
 				if (c > 0.0) {
-					g.setColor(Color.blue);
+					g.setColor(Color.green);
 				} else {
 					g.setColor(Color.black);
 				}
@@ -89,7 +89,7 @@ public class MNISTReader extends JFrame {
 		for (int t = 0; t < 10; t++) {
 			int c = (int) (reconstructed_input[i++] + 0.5);
 			if (c > 0.0) {
-				g.setColor(Color.blue);
+				g.setColor(Color.green);
 			} else {
 				g.setColor(Color.black);
 			}
@@ -151,8 +151,7 @@ public class MNISTReader extends JFrame {
 		
 		for (int i = 0; i < w.length; i++) {
 			for (int j = 0; j < w[i].length; j++) {
-				w[i][j] = w[i][j] + ((out[j] * inp[i]) - (out[j] * rec[i]));
-				
+				w[i][j] = w[i][j] + (inp[i] - rec[i])* out[j];
 			}
 		}
 	}
@@ -209,7 +208,7 @@ public class MNISTReader extends JFrame {
 				frame.setVisible(true);
 				frame.repaint();
 				try {
-					Thread.sleep(200); // 20 milliseconds is one second.
+					Thread.sleep(500); // 20 milliseconds is one second.
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}

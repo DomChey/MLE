@@ -34,7 +34,7 @@ public class MNISTReader extends JFrame {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
 				int c = (int) (input[i++]);
 				if (c > 0.0) {
-					g.setColor(Color.green);
+					g.setColor(Color.magenta);
 				} else {
 					g.setColor(Color.black);
 				}
@@ -45,7 +45,7 @@ public class MNISTReader extends JFrame {
 		for (int t = 0; t < 10; t++) {
 			int c = (int) (input[i++]);
 			if (c > 0.0) {
-				g.setColor(Color.green);
+				g.setColor(Color.magenta);
 			} else {
 				g.setColor(Color.black);
 			}
@@ -54,10 +54,12 @@ public class MNISTReader extends JFrame {
 		i = 0;
 		for (int colIdx = 0; colIdx < 28; colIdx++) {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
-//				int c = (int) (output[i++] + 0.5);
-				int c =(Math.random()<0.5)?0:1;
+				int c = (int) (output[i++] + 0.5);
+				// Plan B
+				c = (Math.random() < 0.5) ? 0 : 1;
+				//
 				if (c > 0.0) {
-					g.setColor(Color.green);
+					g.setColor(Color.magenta);
 				} else {
 					g.setColor(Color.black);
 				}
@@ -68,7 +70,7 @@ public class MNISTReader extends JFrame {
 		for (int t = 0; t < 10; t++) {
 			int c = (int) (output[i++] + 0.5);
 			if (c > 0.0) {
-				g.setColor(Color.green);
+				g.setColor(Color.magenta);
 			} else {
 				g.setColor(Color.black);
 			}
@@ -79,7 +81,7 @@ public class MNISTReader extends JFrame {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
 				int c = (int) (reconstructed_input[i++] + 0.5);
 				if (c > 0.0) {
-					g.setColor(Color.green);
+					g.setColor(Color.magenta);
 				} else {
 					g.setColor(Color.black);
 				}
@@ -90,7 +92,7 @@ public class MNISTReader extends JFrame {
 		for (int t = 0; t < 10; t++) {
 			int c = (int) (reconstructed_input[i++] + 0.5);
 			if (c > 0.0) {
-				g.setColor(Color.green);
+				g.setColor(Color.magenta);
 			} else {
 				g.setColor(Color.black);
 			}
@@ -134,7 +136,7 @@ public class MNISTReader extends JFrame {
 			for (int j = 0; j < in.length; j++) {
 				tmp = tmp + w[i][j] * in[j];
 			}
-			tmp = 1 / (1 + Math.exp(tmp*(-0.1)));
+			tmp = 1 / (1 + Math.exp(tmp * (-0.1)));
 			out[i] = tmp;
 		}
 
@@ -146,16 +148,16 @@ public class MNISTReader extends JFrame {
 			for (int j = 0; j < rec.length; j++) {
 				tmp = tmp + w[i][j] * out[j];
 			}
-			tmp = 1 / (1 + Math.exp(tmp*(-0.1)));
+			tmp = 1 / (1 + Math.exp(tmp * (-0.1)));
 			rec[i] = tmp;
 		}
 	}
 
 	public void contrastiveDivergence(double inp[], double out[], double rec[], double w[][]) {
-		
+
 		for (int i = 0; i < w.length; i++) {
 			for (int j = 0; j < w[i].length; j++) {
-				w[i][j] = w[i][j] + (inp[i] - rec[i])*out[j];
+				w[i][j] = w[i][j] + (inp[i] - rec[i]) * out[j];
 
 			}
 		}
@@ -185,7 +187,7 @@ public class MNISTReader extends JFrame {
 				}
 			}
 
-			// drawActivity(0,0,input,red,green,blue);
+			// drawActivity(0,0,input,red,magenta,magenta);
 
 			// --- Contrastive divergence
 			// Activation
@@ -193,13 +195,13 @@ public class MNISTReader extends JFrame {
 			activateForward(input, weights, output); // positive Phase
 			output[0] = 1; // bias neuron!
 
-			// drawActivity(300,0,output,red,green,blue);
+			// drawActivity(300,0,output,red,magenta,magenta);
 
 			activateReconstruction(reconstructed_input, weights, output); // negative
 																			// phase/
 																			// reconstruction
 
-			// drawActivity(600,0,reconstructed_input,red,green,blue);
+			// drawActivity(600,0,reconstructed_input,red,magenta,magenta);
 			if (train) {
 				contrastiveDivergence(input, output, reconstructed_input, weights);
 			}

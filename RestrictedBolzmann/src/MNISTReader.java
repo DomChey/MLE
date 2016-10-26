@@ -115,7 +115,7 @@ public class MNISTReader extends JFrame {
 		;
 
 		System.out.println("Teststep:");
-		frame.trainOrTestNet(false, 1000, frame);
+		frame.trainOrTestNet(false, 10000, frame);
 	}
 
 	public void init(double weights[][]) {
@@ -128,22 +128,25 @@ public class MNISTReader extends JFrame {
 	}
 
 	public void activateForward(double in[], double w[][], double out[]) {
-
+		double tmp = 0;
 		for (int i = 0; i < in.length; i++) {
 			for (int j = 0; j < in.length; j++) {
-				out[i] = out[i] + w[i][j] * in[j];
+				tmp = tmp + w[i][j] * in[j];
 			}
-			out[i] = 1 / (1 + Math.exp(out[i]*(-1)));
+			tmp = 1 / (1 + Math.exp(tmp*(-0.1)));
+			out[i] = tmp;
 		}
+
 	}
 
 	public void activateReconstruction(double rec[], double w[][], double out[]) {
-
+		double tmp = 0;
 		for (int i = 0; i < out.length; i++) {
 			for (int j = 0; j < rec.length; j++) {
-				rec[i] = rec[i] + w[i][j] * out[j];
+				tmp = tmp + w[i][j] * out[j];
 			}
-			rec[i] = 1 / (1 + Math.exp(rec[i]*(-1)));
+			tmp = 1 / (1 + Math.exp(tmp*(-0.1)));
+			rec[i] = tmp;
 		}
 	}
 
@@ -151,7 +154,8 @@ public class MNISTReader extends JFrame {
 		
 		for (int i = 0; i < w.length; i++) {
 			for (int j = 0; j < w[i].length; j++) {
-				w[i][j] = w[i][j] + (inp[i] - rec[i])* out[j];
+				w[i][j] = w[i][j] + (inp[i] - rec[i])*out[j];
+
 			}
 		}
 	}
@@ -208,7 +212,7 @@ public class MNISTReader extends JFrame {
 				frame.setVisible(true);
 				frame.repaint();
 				try {
-					Thread.sleep(500); // 20 milliseconds is one second.
+					Thread.sleep(200); // 20 milliseconds is one second.
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}

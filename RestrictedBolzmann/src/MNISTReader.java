@@ -34,7 +34,7 @@ public class MNISTReader extends JFrame {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
 				int c = (int) (input[i++]);
 				if (c > 0.0) {
-					g.setColor(Color.blue);
+					g.setColor(Color.green);
 				} else {
 					g.setColor(Color.black);
 				}
@@ -45,7 +45,7 @@ public class MNISTReader extends JFrame {
 		for (int t = 0; t < 10; t++) {
 			int c = (int) (input[i++]);
 			if (c > 0.0) {
-				g.setColor(Color.blue);
+				g.setColor(Color.green);
 			} else {
 				g.setColor(Color.black);
 			}
@@ -56,7 +56,7 @@ public class MNISTReader extends JFrame {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
 				int c = (int) (output[i++] + 0.5);
 				if (c > 0.0) {
-					g.setColor(Color.blue);
+					g.setColor(Color.green);
 				} else {
 					g.setColor(Color.black);
 				}
@@ -67,7 +67,7 @@ public class MNISTReader extends JFrame {
 		for (int t = 0; t < 10; t++) {
 			int c = (int) (output[i++] + 0.5);
 			if (c > 0.0) {
-				g.setColor(Color.blue);
+				g.setColor(Color.green);
 			} else {
 				g.setColor(Color.black);
 			}
@@ -78,7 +78,7 @@ public class MNISTReader extends JFrame {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
 				int c = (int) (reconstructed_input[i++] + 0.5);
 				if (c > 0.0) {
-					g.setColor(Color.blue);
+					g.setColor(Color.green);
 				} else {
 					g.setColor(Color.black);
 				}
@@ -89,7 +89,7 @@ public class MNISTReader extends JFrame {
 		for (int t = 0; t < 10; t++) {
 			int c = (int) (reconstructed_input[i++] + 0.5);
 			if (c > 0.0) {
-				g.setColor(Color.blue);
+				g.setColor(Color.green);
 			} else {
 				g.setColor(Color.black);
 			}
@@ -115,7 +115,7 @@ public class MNISTReader extends JFrame {
 		;
 
 		System.out.println("Teststep:");
-		frame.trainOrTestNet(false, 1000, frame);
+		frame.trainOrTestNet(false, 10000, frame);
 	}
 
 	public void init(double weights[][]) {
@@ -128,33 +128,36 @@ public class MNISTReader extends JFrame {
 	}
 
 	public void activateForward(double in[], double w[][], double out[]) {
+		double tmp = 0;
+		for (int i = 0; i < in.length; i++) {
+			for (int j = 0; j < in.length; j++) {
+				tmp = tmp + w[i][j] * in[j];
+			}
+			tmp = 1 / (1 + Math.exp(tmp*(-0.1)));
+			out[i] = tmp;
+		}
 
-//		for (int i = 0; i < in.length; i++) {
-//			for (int j = 0; j < in.length; j++) {
-//				out[i] = out[i] + w[i][j] * in[i];
-//			}
-//			out[i] = 1 / (1 + Math.exp(out[i]*(-1)));
-//		}
 	}
 
 	public void activateReconstruction(double rec[], double w[][], double out[]) {
-
-//		for (int i = 0; i < out.length; i++) {
-//			for (int j = 0; j < rec.length; j++) {
-//				rec[i] = rec[i] + w[i][j] * out[i];
-//			}
-//			rec[i] = 1 / (1 + Math.exp(rec[i]*(-1)));
-//		}
+		double tmp = 0;
+		for (int i = 0; i < out.length; i++) {
+			for (int j = 0; j < rec.length; j++) {
+				tmp = tmp + w[i][j] * out[j];
+			}
+			tmp = 1 / (1 + Math.exp(tmp*(-0.1)));
+			rec[i] = tmp;
+		}
 	}
 
 	public void contrastiveDivergence(double inp[], double out[], double rec[], double w[][]) {
 		
-//		for (int i = 0; i < w.length; i++) {
-//			for (int j = 0; j < w[i].length; j++) {
-//				w[i][j] = w[i][j] + ((out[i] * inp[i]) - (out[i] * rec[i]));
-//				
-//			}
-//		}
+		for (int i = 0; i < w.length; i++) {
+			for (int j = 0; j < w[i].length; j++) {
+				w[i][j] = w[i][j] + (inp[i] - rec[i])*out[j];
+
+			}
+		}
 	}
 
 	void trainOrTestNet(boolean train, int maxCount, MNISTReader frame) {

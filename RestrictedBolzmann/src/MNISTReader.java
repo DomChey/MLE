@@ -54,7 +54,8 @@ public class MNISTReader extends JFrame {
 		i = 0;
 		for (int colIdx = 0; colIdx < 28; colIdx++) {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
-				int c = (int) (output[i++] + 0.5);
+//				int c = (int) (output[i++] + 0.5);
+				int c =(Math.random()<0.5)?0:1;
 				if (c > 0.0) {
 					g.setColor(Color.green);
 				} else {
@@ -212,7 +213,7 @@ public class MNISTReader extends JFrame {
 				frame.setVisible(true);
 				frame.repaint();
 				try {
-					Thread.sleep(200); // 20 milliseconds is one second.
+					Thread.sleep(300); // 20 milliseconds is one second.
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}

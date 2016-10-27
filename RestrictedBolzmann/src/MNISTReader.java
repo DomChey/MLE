@@ -56,7 +56,7 @@ public class MNISTReader extends JFrame {
 			for (int rowIdx = 0; rowIdx < 28; rowIdx++) {
 				int c = (int) (output[i++] + 0.5);
 				// Plan B
-				c = (Math.random() < 0.5) ? 0 : 1;
+				// c = (Math.random() < 0.5) ? 0 : 1;
 				//
 				if (c > 0.0) {
 					g.setColor(Color.magenta);
@@ -114,11 +114,11 @@ public class MNISTReader extends JFrame {
 		frame.readMnistDatabase();
 		frame.setSize(900, 350);
 		System.out.println("Learning step:");
-		frame.trainOrTestNet(true, 10000, frame);
+		frame.trainOrTestNet(true, 1000, frame);
 		;
 
 		System.out.println("Teststep:");
-		frame.trainOrTestNet(false, 10000, frame);
+		frame.trainOrTestNet(false, 1000, frame);
 	}
 
 	public void init(double weights[][]) {
@@ -131,10 +131,11 @@ public class MNISTReader extends JFrame {
 	}
 
 	public void activateForward(double in[], double w[][], double out[]) {
-		double tmp = 0;
+		
 		for (int i = 0; i < in.length; i++) {
+			double tmp = 0;
 			for (int j = 0; j < in.length; j++) {
-				tmp = tmp + w[i][j] * in[j];
+				tmp = tmp + w[j][i] * in[j];
 			}
 			tmp = 1 / (1 + Math.exp(tmp * (-0.1)));
 			out[i] = tmp;
@@ -143,8 +144,9 @@ public class MNISTReader extends JFrame {
 	}
 
 	public void activateReconstruction(double rec[], double w[][], double out[]) {
-		double tmp = 0;
+		
 		for (int i = 0; i < out.length; i++) {
+			double tmp = 0;
 			for (int j = 0; j < rec.length; j++) {
 				tmp = tmp + w[i][j] * out[j];
 			}
@@ -157,9 +159,9 @@ public class MNISTReader extends JFrame {
 
 		for (int i = 0; i < w.length; i++) {
 			for (int j = 0; j < w[i].length; j++) {
-				w[i][j] = w[i][j] + (inp[i] - rec[i]) * out[j];
-
+				w[i][j] += (inp[i] - rec[i]) * out[j];
 			}
+
 		}
 	}
 
@@ -215,7 +217,7 @@ public class MNISTReader extends JFrame {
 				frame.setVisible(true);
 				frame.repaint();
 				try {
-					Thread.sleep(300); // 20 milliseconds is one second.
+					Thread.sleep(250); // 20 milliseconds is one second.
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}

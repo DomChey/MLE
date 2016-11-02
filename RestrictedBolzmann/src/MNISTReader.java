@@ -118,7 +118,7 @@ public class MNISTReader extends JFrame {
 		;
 
 		System.out.println("Teststep:");
-		frame.trainOrTestNet(false, 1000, frame);
+		frame.trainOrTestNet(false, 100, frame);
 	}
 
 	public void init(double weights[][]) {
@@ -217,7 +217,7 @@ public class MNISTReader extends JFrame {
 				frame.setVisible(true);
 				frame.repaint();
 				try {
-					Thread.sleep(250); // 20 milliseconds is one second.
+					Thread.sleep(300); // 20 milliseconds is one second.
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}

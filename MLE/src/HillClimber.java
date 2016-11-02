@@ -37,7 +37,7 @@ public class HillClimber {
 	//just to pretty print a 2D-Array
 	public static void print2DArray(int[][] input){
 		for (int i = 0; i<input.length; i++){
-			for (int j =0; j<input.length; j++){
+			for (int j =0; j<input[i].length; j++){
 				int dingens = input[i][j];
 				System.out.printf("%5d ", dingens);
 			}

@@ -114,11 +114,11 @@ public class MNISTReader extends JFrame {
 		frame.readMnistDatabase();
 		frame.setSize(900, 350);
 		System.out.println("Learning step:");
-		frame.trainOrTestNet(true, 1000, frame);
+		frame.trainOrTestNet(true, 10000, frame);
 		;
 
 		System.out.println("Teststep:");
-		frame.trainOrTestNet(false, 100, frame);
+		frame.trainOrTestNet(false, 1000, frame);
 	}
 
 	public void init(double weights[][]) {

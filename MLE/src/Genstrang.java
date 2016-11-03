@@ -1,16 +1,20 @@
 import java.util.Arrays;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
+
+import sun.net.NetworkServer;
+
 public class Genstrang {
 
-	public static int populationSize = 100;
+	public static int populationSize = 10;
 	public static int geneSize = 5;
 	public static int populationFitness;
 	public static int[] goldenGenstrang = new int[(geneSize + 1)];
 	public static int mutationRate = 0;
 	public static double r = 0.25;
-	public static double nonCrossoverRate = (Math.round((1 - r) * populationSize));
-	public static double crossoverRate = Math.round((r * populationSize) / 2);
-	public static int mainCount = 0;
+	public static double nonCrossoverRate;
+	public static double crossoverRate;
+	public static int mainCount = 1;
 
 	// geneSize +1 because in the first field of each individual we save its
 	// fitness
@@ -38,6 +42,17 @@ public class Genstrang {
 
 	}
 
+	public static void calculateCrossover() {
+		nonCrossoverRate = (Math.round((1 - r) * populationSize));
+
+		if (nonCrossoverRate % 2 != 0) {
+			nonCrossoverRate = nonCrossoverRate - 1;
+		}
+		crossoverRate = (populationSize - nonCrossoverRate) / 2;
+
+//		System.out.println("Crossover:" + crossoverRate + "noCross: " + nonCrossoverRate);
+	}
+
 	public static void calculateFitness() {
 		int maxFitness = 0;
 		int individualCount = 0;
@@ -59,12 +74,13 @@ public class Genstrang {
 			population[i][0] = fitness;
 		}
 		goldenGenstrang = Arrays.copyOf(population[individualCount], (geneSize + 1));
+		newPopulation[0] = goldenGenstrang;
 	}
 
 	public static int selectHypothesis() {
 		double randNum = Math.random();
 		double summe = 0;
-		int index = (int) (Math.random() * geneSize + 1);
+		int index = (int) (Math.random() * populationSize + 1);
 		do {
 			index = index + 1;
 			index = index % populationSize;
@@ -76,7 +92,8 @@ public class Genstrang {
 	}
 
 	public static void noCrossover() {
-		for (int i = 0; i < nonCrossoverRate; i++) {
+		// -1 da goldenGenestrag schon kopiert
+		for (int i = 0; i < nonCrossoverRate-1; i++) {
 			int index = selectHypothesis();
 			newPopulation[mainCount] = Arrays.copyOf(population[index], (geneSize + 1));
 			mainCount++;
@@ -85,29 +102,54 @@ public class Genstrang {
 
 	public static void crossover() {
 		for (int i = 0; i < crossoverRate; i++) {
-			int index = selectHypothesis();
-			if (crossoverRate % 2 != 0) {
-				newPopulation[mainCount] = Arrays.copyOf(population[index], (geneSize + 1));
-				mainCount++;
-			} else {
-				// hier muss der Crossover rein
-				// System.arraycopy(src, srcPos, dest, destPos, length);
-				// am besten dafür extra Methode
-			}
+			int cross1 = selectHypothesis();
+			// System.out.println("Cross1: " +
+			// Arrays.toString(population[cross1]));
+
+			int cross2 = selectHypothesis();
+			// System.out.println("Cross2: " +
+			// Arrays.toString(population[cross2]));
+			int crossoverPoint = (int) (Math.random() * geneSize + 1);
+			// System.out.println("Crossoverpoint:" + crossoverPoint);
+
+			System.arraycopy(population[cross1], 0, newPopulation[mainCount], 0, crossoverPoint);
+			System.arraycopy(population[cross2], crossoverPoint, newPopulation[mainCount], crossoverPoint,
+					geneSize + 1 - crossoverPoint);
+			// System.out.println(Arrays.toString(newPopulation[mainCount]));
+			mainCount++;
+			System.arraycopy(population[cross2], 0, newPopulation[mainCount], 0, crossoverPoint);
+			System.arraycopy(population[cross1], crossoverPoint, newPopulation[mainCount], crossoverPoint,
+					geneSize + 1 - crossoverPoint);
+			// System.out.println(Arrays.toString(newPopulation[mainCount]));
+			mainCount++;
 
 		}
 	}
 
 	public static void main(String[] args) {
-//Hier fehlt noch eine große Schleife um alles drum herum
-		Genstrang.fillPopulation();
+		// Hier fehlt noch eine große Schleife um alles drum herum
+		calculateCrossover();
 		Genstrang.fillTargetGenstrang();
-		calculateFitness();
-		System.out.println("Old Population");
-		HillClimber.print2DArray(population);
-		System.out.println("New Popultion");
-		noCrossover();
-		crossover();
-		HillClimber.print2DArray(newPopulation);
+		Genstrang.fillPopulation();	
+		int counticount = 0;
+		do {
+			counticount++;			
+			calculateFitness();			
+			
+//			System.out.println("Old Population");
+//			HillClimber.print2DArray(population);
+			
+			noCrossover();
+			crossover();
+			
+//			System.out.println("New Population");
+//			HillClimber.print2DArray(newPopulation);
+			mainCount = 1;
+			System.out.println("Fitness: " + goldenGenstrang[0]);
+			population = newPopulation;
+
+		} while (goldenGenstrang[0] < geneSize);
+		System.out.println("Counticount: " + counticount);
+
 	}
 }

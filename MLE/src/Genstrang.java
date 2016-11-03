@@ -44,23 +44,37 @@ public class Genstrang {
 
 		for (int i = 0; i < population.length; i++) {
 			fitness = 0;
-			
+
 			for (int k = 1; k < population[i].length; k++) {
 				if (population[i][k] == targetGenstrang[k - 1]) {
 					fitness = fitness + 1;
 				}
 			}
-			
+
 			if (fitness > maxFitness) {
 				maxFitness = fitness;
 				individualCount = i;
 			}
-			
+
 			populationFitness += fitness;
 			population[i][0] = fitness;
 		}
-		
+
 		goldenGenstrang = Arrays.copyOf(population[individualCount], (geneSize + 1));
+	}
+
+	public static int selectHypothesis() {
+		double randNum = Math.random();
+		double summe = 0;
+		int index = (int) (Math.random() * geneSize + 1);
+		do {
+			index = index + 1;
+			index = index % populationSize;
+			double probability = (double) population[index][0] / (double) populationFitness;
+			summe = summe + probability;
+
+		} while (summe < randNum);
+		return index;
 	}
 
 	public static void main(String[] args) {
@@ -69,6 +83,7 @@ public class Genstrang {
 		Genstrang.fillTargetGenstrang();
 		calculateFitness();
 		HillClimber.print2DArray(population);
+		selectHypothesis();
 
 	}
 

@@ -3,20 +3,19 @@ import java.util.Arrays;
 public class Genstrang {
 
 	public static int populationSize = 100;
-	public static int newPopulationSize;
 	public static int geneSize = 5;
 	public static int populationFitness;
 	public static int[] goldenGenstrang = new int[(geneSize + 1)];
 	public static int mutationRate = 0;
 	public static double r = 0.25;
 	public static double nonCrossoverRate = (Math.round((1 - r) * populationSize));
-	public static double crossoverRate = Math.round((r * populationSize));
+	public static double crossoverRate = Math.round((r * populationSize) / 2);
 	public static int mainCount = 0;
 
 	// geneSize +1 because in the first field of each individual we save its
 	// fitness
 	public static int[][] population = new int[populationSize][(geneSize + 1)];
-	public static int[][] newPopulation = new int[newPopulationSize][(geneSize + 1)];
+	public static int[][] newPopulation = new int[populationSize][(geneSize + 1)];
 	public static int[] targetGenstrang = new int[geneSize];
 
 	public static void fillPopulation() {
@@ -76,16 +75,6 @@ public class Genstrang {
 		return index;
 	}
 
-	public static void calcNewPopulationSize() {
-		newPopulationSize = (int) nonCrossoverRate + (int) (2 * (crossoverRate));
-		if (crossoverRate % 2 != 0) {
-			newPopulationSize = (int) (nonCrossoverRate + (int) (2 * (crossoverRate)) )- 1;
-		}
-
-//		System.out.println(nonCrossoverRate + " " + crossoverRate);
-		newPopulation = new int[newPopulationSize][(geneSize + 1)];
-	}
-
 	public static void noCrossover() {
 		for (int i = 0; i < nonCrossoverRate; i++) {
 			int index = selectHypothesis();
@@ -110,18 +99,15 @@ public class Genstrang {
 	}
 
 	public static void main(String[] args) {
-
+//Hier fehlt noch eine große Schleife um alles drum herum
 		Genstrang.fillPopulation();
 		Genstrang.fillTargetGenstrang();
 		calculateFitness();
 		System.out.println("Old Population");
 		HillClimber.print2DArray(population);
-		calcNewPopulationSize();
-		System.out.println("new Popultionsize: " + newPopulationSize);
 		System.out.println("New Popultion");
 		noCrossover();
 		crossover();
 		HillClimber.print2DArray(newPopulation);
 	}
-
 }

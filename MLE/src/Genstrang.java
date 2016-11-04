@@ -6,11 +6,11 @@ import sun.net.NetworkServer;
 
 public class Genstrang {
 
-	public static int populationSize = 10;
-	public static int geneSize = 5;
+	public static int populationSize = 100;
+	public static int geneSize = 20;
 	public static int populationFitness;
 	public static int[] goldenGenstrang = new int[(geneSize + 1)];
-	public static int mutationRate = 0;
+	public static int mutationRate = 10;
 	public static double r = 0.25;
 	public static double nonCrossoverRate;
 	public static double crossoverRate;
@@ -50,7 +50,8 @@ public class Genstrang {
 		}
 		crossoverRate = (populationSize - nonCrossoverRate) / 2;
 
-//		System.out.println("Crossover:" + crossoverRate + "noCross: " + nonCrossoverRate);
+		// System.out.println("Crossover:" + crossoverRate + "noCross: " +
+		// nonCrossoverRate);
 	}
 
 	public static void calculateFitness() {
@@ -93,7 +94,7 @@ public class Genstrang {
 
 	public static void noCrossover() {
 		// -1 da goldenGenestrag schon kopiert
-		for (int i = 0; i < nonCrossoverRate-1; i++) {
+		for (int i = 0; i < nonCrossoverRate - 1; i++) {
 			int index = selectHypothesis();
 			newPopulation[mainCount] = Arrays.copyOf(population[index], (geneSize + 1));
 			mainCount++;
@@ -126,24 +127,49 @@ public class Genstrang {
 		}
 	}
 
+	public static void mutation() {
+		for (int i = 0; i < mutationRate; i++) {
+			int index = (int) (Math.random() * populationSize);
+			while (index == 0) {
+				// System.out.println("WHILEWHILEWHILEWHILE: " + index);
+				index = (int) (Math.random() * populationSize);
+				// System.out.println("NEW INDEX: " + index);
+
+			}
+			// System.out.println("Index: " + index);
+			int bit = (int) (Math.random() * geneSize + 1);
+			// System.out.println("bit: " + bit);
+			// System.out.println("Population: " +
+			// Arrays.toString(newPopulation[index]));
+
+			if (newPopulation[index][bit] == 0) {
+				newPopulation[index][bit] = 1;
+			} else {
+				newPopulation[index][bit] = 0;
+			}
+			// System.out.println("Population: " +
+			// Arrays.toString(newPopulation[index]));
+		}
+	}
+
 	public static void main(String[] args) {
-		// Hier fehlt noch eine große Schleife um alles drum herum
 		calculateCrossover();
 		Genstrang.fillTargetGenstrang();
-		Genstrang.fillPopulation();	
+		Genstrang.fillPopulation();
 		int counticount = 0;
 		do {
-			counticount++;			
-			calculateFitness();			
-			
-//			System.out.println("Old Population");
-//			HillClimber.print2DArray(population);
-			
+			counticount++;
+			calculateFitness();
+
+			// System.out.println("Old Population");
+			// HillClimber.print2DArray(population);
+
 			noCrossover();
 			crossover();
-			
-//			System.out.println("New Population");
-//			HillClimber.print2DArray(newPopulation);
+			mutation();
+
+			// System.out.println("New Population");
+			// HillClimber.print2DArray(newPopulation);
 			mainCount = 1;
 			System.out.println("Fitness: " + goldenGenstrang[0]);
 			population = newPopulation;

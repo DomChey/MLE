@@ -7,7 +7,7 @@ import sun.net.NetworkServer;
 public class Genstrang {
 
 	public static int populationSize = 100;
-	public static int geneSize = 20;
+	public static int geneSize = 100;
 	public static int populationFitness;
 	public static int[] goldenGenstrang = new int[(geneSize + 1)];
 	public static int mutationRate = 10;
@@ -130,14 +130,13 @@ public class Genstrang {
 	public static void mutation() {
 		for (int i = 0; i < mutationRate; i++) {
 			int index = (int) (Math.random() * populationSize);
-			while (index == 0) {
-				// System.out.println("WHILEWHILEWHILEWHILE: " + index);
-				index = (int) (Math.random() * populationSize);
-				// System.out.println("NEW INDEX: " + index);
-
-			}
-			// System.out.println("Index: " + index);
 			int bit = (int) (Math.random() * geneSize + 1);
+
+			do {
+				index = (int) (Math.random() * populationSize);
+				System.out.println(" INDEX: " + index);
+			} while (index == 0);
+			
 			// System.out.println("bit: " + bit);
 			// System.out.println("Population: " +
 			// Arrays.toString(newPopulation[index]));

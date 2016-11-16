@@ -31,11 +31,24 @@ public class VM {
 				case PUSH:{push(reg);pc++; break;}
 				case POP:{reg = pop();pc++;break;}
 				case MUL:{reg = reg*pop();pc++;break;}
-				case DIV:{reg = reg/pop();pc++;break;}
+				case DIV:{int tmp = pop(); if (tmp!= 0){reg = reg/tmp;}pc++;break;}
 				case ADD:{reg = reg+pop();pc++;break;}
 				case SUB:{reg = reg-pop();pc++;break;}
 				case JIH:{if (reg>0){pc = (pc+pop())%MAX;} else {pc++;} break;}
 			}
 		}while(pc<MAX && sp>=0);	
 	}
+	
+	public static void main(String[] args) {
+		VM vm = new VM();
+		
+		
+		for(int i = 0; i< vm.mem.length; i++){
+			vm.mem[i]= (byte)(Math.random()*8);
+//			System.out.println("Random: " + vm.mem[i]);
+		}
+		vm.simulate();
+		System.out.println("REG:" + vm.reg);
+	}
+	
 }

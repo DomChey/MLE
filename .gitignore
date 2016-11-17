@@ -1,3 +1,7 @@
 /MLE/bin/
 /RestrictedBolzmann/bin/
 /.metadata/
+/.idea/
+/MLE/MLE.iml
+/RestrictedBolzmann/RestrictedBolzmann.iml
+/out/

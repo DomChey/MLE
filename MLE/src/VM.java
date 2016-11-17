@@ -18,7 +18,9 @@ public class VM {
 		pc = 0;	sp = 0;	reg= 0;
 	}
 	void push(short x){
-		stack[sp++]=x;
+		if (sp>=0){
+			stack[sp++]=x;
+		}
 	}
 	short pop(){
 		sp--;
@@ -52,9 +54,13 @@ public class VM {
 		
 		for(int i = 0; i< vm.mem.length; i++){
 			vm.mem[i]= (byte)(Math.random()*8);
-//			System.out.println("Random: " + vm.mem[i]);
+			System.out.println("Random: " + vm.mem[i]);
 		}
 		vm.simulate();
+		vm.simulate();
+		for(int i = 0; i< vm.stack.length; i++){
+			System.out.println("Stack: " + vm.stack[i]);
+		}
 		System.out.println("REG:" + vm.reg);
 	}
 	

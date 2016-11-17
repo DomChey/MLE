@@ -9,34 +9,41 @@ public class VM {
 	final byte SUB   = 6; // Reg = Reg-pop()
 	final byte JIH   = 7; // if Reg>0 then pc = pc + pop()
 	
-	int mem[] = new int[MAX];
-	int stack[] = new int[MAX];
-	int pc,sp,reg;
+	short mem[] = new short[MAX];
+	short stack[] = new short[MAX];
+	short sp,reg;
+	int pc;
 	
 	VM(){
 		pc = 0;	sp = 0;	reg= 0;
 	}
-	void push(int x){
+	void push(short x){
 		stack[sp++]=x;
 	}
-	int pop(){
-		if (sp>=1)
-			sp--;
-		return stack[sp];
+	short pop(){
+		sp--;
+		if (sp>=0){
+			return stack[sp];
+		}else{
+			return 0;
+		}
 	}
 	void simulate(){
+		int counter = 0;
 		do{
+			counter++;
 			switch (mem[pc]&7){
-				case LOAD:{reg = mem[pc]>>3;pc++; break;}
-				case PUSH:{push(reg);pc++; break;}
-				case POP:{reg = pop();pc++;break;}
-				case MUL:{reg = reg*pop();pc++;break;}
-				case DIV:{int tmp = pop(); if (tmp!= 0){reg = reg/tmp;}pc++;break;}
-				case ADD:{reg = reg+pop();pc++;break;}
-				case SUB:{reg = reg-pop();pc++;break;}
-				case JIH:{if (reg>0){pc = (pc+pop())%MAX;} else {pc++;} break;}
+				case LOAD:{reg = (short)(mem[pc]>>3); push(reg); pc++; break;}
+				case PUSH:{push(reg);  pc++; break;}
+				case POP: {reg = pop();pc++;break;}
+				case MUL: {reg = (short) (reg*pop());push(reg);pc++;break;}
+				case DIV: {short d = pop(); if (d!=0){reg = (short) (reg/d);push(reg);}pc++;break;}
+				case ADD: {reg = (short)(reg+pop());push(reg);pc++;break;}
+				case SUB: {reg = (short)(reg-pop());push(reg);pc++;break;}
+				case JIH: {short d=pop(); if (pc+d>=0)pc = (pc+d)%MAX; else pc++; break;}
 			}
-		}while(pc<MAX && sp>=0);	
+			pc = pc%MAX;
+		}while(sp>=0 && counter<=10000);	
 	}
 	
 	public static void main(String[] args) {

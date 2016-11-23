@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class VM {
 	final int MAX = 1000;
 	final byte LOAD  = 0; // Reg = #1234
@@ -9,26 +11,37 @@ public class VM {
 	final byte SUB   = 6; // Reg = Reg-pop()
 	final byte JIH   = 7; // if Reg>0 then pc = pc + pop()
 	
+	ArrayList<Short> primeNumbers = new ArrayList<Short>();
 	short mem[] = new short[MAX];
 	short stack[] = new short[MAX];
 	short sp,reg;
 	int pc;
 	
 	VM(){
-		pc = 0;	sp = 0;	reg= 0;
+		this.pc = 0;
+		this.sp = 0;
+		this.reg= 0;
+		this.initializeMemory();
+		this.fillStackRandomly();
 	}
+	
 	void push(short x){
+		if(isPrime(x)){
+			if(! primeNumbers.contains(x)){
+				primeNumbers.add(x);
+				System.out.println("Primzahl gefunden!");
+			}
+		}
 		if (sp>=0){
 			stack[sp++]=x;
 		}
 	}
 	short pop(){
 		sp--;
-		if (sp>=0){
-			return stack[sp];
-		}else{
-			return 0;
+		if (sp < 0){
+			sp = (short) (Math.random()*(MAX+1));
 		}
+		return stack[sp];
 	}
 	void simulate(){
 		int counter = 0;
@@ -48,20 +61,46 @@ public class VM {
 		}while(sp>=0 && counter<=10000);	
 	}
 	
+	public boolean isPrime(short x){
+		if(x < 3){
+			return x == 2;
+		}
+		if(x % 2 == 0){
+			return false;
+		}
+		for(int i = 3; i*i < x; i+=2){
+			if(x % i == 0){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public int getFitness(){
+		 return primeNumbers.size();
+	}
+	
+	private void initializeMemory(){
+		for(int i = 0; i< this.mem.length; i++){
+			this.mem[i]= (byte)(Math.random()*8);
+//			System.out.println("Random: " + this.mem[i]);
+		}
+	}
+	
+	private void fillStackRandomly(){
+		for(int i = 0; i< this.stack.length; i++){
+			this.stack[i]= (byte)(Math.random()*100);
+//			System.out.println("Random: " + this.mem[i]);
+		}
+	}
+	
 	public static void main(String[] args) {
 		VM vm = new VM();
-		
-		
-		for(int i = 0; i< vm.mem.length; i++){
-			vm.mem[i]= (byte)(Math.random()*8);
-			System.out.println("Random: " + vm.mem[i]);
-		}
-		vm.simulate();
 		vm.simulate();
 		for(int i = 0; i< vm.stack.length; i++){
 			System.out.println("Stack: " + vm.stack[i]);
 		}
-		System.out.println("REG:" + vm.reg);
+		System.out.println("Fitness: " + vm.getFitness());
 	}
 	
 }

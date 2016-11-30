@@ -34,7 +34,6 @@ public class VM {
         if (isPrime(x)) {
             if (!primeNumbers.contains(x)) {
                 primeNumbers.add(x);
-                //System.out.println("Primzahl gefunden!");
             }
         }
 
@@ -117,7 +116,7 @@ public class VM {
         if (x % 2 == 0) {
             return false;
         }
-        for (int i = 3; i * i <= x; i ++) {
+        for (int i = 3; i * i <= x; i++) {
             if (x % i == 0) {
                 return false;
             }
@@ -129,26 +128,30 @@ public class VM {
         return this.primeNumbers.size();
     }
 
-    private void initializeMemory() {
+    public void initializeMemory() {
         for (int i = 0; i < this.mem.length; i++) {
             this.mem[i] = (byte) (Math.random() * 8);
-//			System.out.println("Random: " + this.mem[i]);
         }
     }
 
     private void fillStackRandomly() {
         for (int i = 0; i < this.stack.length; i++) {
             this.stack[i] = (byte) (Math.random() * 100);
-//			System.out.println("Random: " + this.mem[i]);
         }
     }
 
-
-
-
-
-
-
+    public VM deepCopy() {
+        VM resultVM = new VM();
+        resultVM.sp = this.sp;
+        resultVM.pc = this.pc;
+        resultVM.reg = this.reg;
+        for (int i = 0; i < MAX; i++) {
+            resultVM.mem[i] = this.mem[i];
+            resultVM.stack[i] = this.stack[i];
+        }
+        resultVM.primeNumbers = new ArrayList<Short>(this.primeNumbers);
+        return resultVM;
+    }
 
 
 }

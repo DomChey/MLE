@@ -70,9 +70,9 @@ public class PrimeNumbers {
                 // is the best VM do not overwrite it
                 VMindex = (int) (Math.random() * (populationSize - 1));
             }
-            newPopulation[VMindex].initializeMemory();
-            newPopulation[VMindex].primeNumbers.clear();
-
+            short MemIndex = (short) (Math.random() * (newPopulation[VMindex].mem.length - 1));
+            byte mem = (byte) (Math.random() * 8);
+            newPopulation[VMindex].mem[MemIndex] = mem;
         }
     }
 
@@ -94,7 +94,7 @@ public class PrimeNumbers {
 
         createPopulation();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             simulatePopulation();
             calculatePopulationFitness();
             createNewPopulation();

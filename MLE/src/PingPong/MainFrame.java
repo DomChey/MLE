@@ -78,23 +78,34 @@ public class MainFrame extends JFrame {
         if (yV == 1) {
             xV = 1;
         }
+        int actualQValue = Q[xBall][yBall][xSchlaeger][xR][yR];
 
         int rewardLeft = Q[xBall][yBall][xSchlaeger][xR][yR];
         int rewardRight = Q[xBall][yBall][xSchlaeger][xR][yR];
         if(xSchlaeger !=0){
             rewardLeft = Q[xBall][yBall][xSchlaeger-1][xR][yR];
+            System.out.println("rewardLeft: " + rewardLeft);
         }
         if (xSchlaeger != 9){
             rewardRight = Q[xBall][yBall][xSchlaeger+1][xR][yR];
+            System.out.println("rewardRight: "+ rewardRight);
         }
-
+        if (rewardLeft > rewardRight)
+        {
+        	return -1;
+        } else if (rewardRight > rewardLeft){
+        	return 1;
+        }else{
+        	return (2.0 * Math.random() - 1.0);
+        }
+ 
 
         // *********************
         //sehr viel zu tun, eigentliche Lernregel
         // *********************
 
 
-       return (2.0 * Math.random() - 1.0);
+//       
     }
 
     public void run() {

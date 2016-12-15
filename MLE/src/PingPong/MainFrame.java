@@ -21,6 +21,7 @@ public class MainFrame extends JFrame {
     Image renderTarget = null;
     public int mousex, mousey, mousek;
     public int key;
+    static int counter = 0;
 
     public MainFrame(String[] args) {
         super("PingPong");
@@ -65,7 +66,10 @@ public class MainFrame extends JFrame {
         }
         Q[xBall][yBall][xSchlaeger][xR][yR] = reward;
 
-        System.out.println("lernt!");
+
+
+
+
     }
 
     public double runAction(int xBall, int yBall, int xSchlaeger, int xV, int yV){
@@ -84,11 +88,11 @@ public class MainFrame extends JFrame {
         int rewardRight = Q[xBall][yBall][xSchlaeger][xR][yR];
         if(xSchlaeger !=0){
             rewardLeft = Q[xBall][yBall][xSchlaeger-1][xR][yR];
-            System.out.println("rewardLeft: " + rewardLeft);
+          //  System.out.println("rewardLeft: " + rewardLeft);
         }
         if (xSchlaeger != 9){
             rewardRight = Q[xBall][yBall][xSchlaeger+1][xR][yR];
-            System.out.println("rewardRight: "+ rewardRight);
+           // System.out.println("rewardRight: "+ rewardRight);
         }
         if (rewardLeft > rewardRight)
         {
@@ -98,7 +102,11 @@ public class MainFrame extends JFrame {
         }else{
         	return (2.0 * Math.random() - 1.0);
         }
- 
+
+               /* Qt=Qt+α(r t+γ maxat (Qt+1)−Qt)
+        α∈[0..1]ist Lernrate z.B.α=0.01
+        γ∈[0..1]ist Discountfaktor
+        rt ist Reward (Belohnung)*/
 
         // *********************
         //sehr viel zu tun, eigentliche Lernregel
@@ -114,10 +122,12 @@ public class MainFrame extends JFrame {
         int score = 0;
 
         while (!stop) {
-            inputOutput.fillRect(0, 0, imageWidth, imageHeight, Color.black);
-            inputOutput.fillRect(xBall * 30, yBall * 30, 30, 30, Color.green);
-            inputOutput.fillRect(xSchlaeger * 30, 11 * 30 + 20, 90, 10, Color.orange);
-
+            counter++;
+            if(counter>1000) {
+                inputOutput.fillRect(0, 0, imageWidth, imageHeight, Color.black);
+                inputOutput.fillRect(xBall * 30, yBall * 30, 30, 30, Color.green);
+                inputOutput.fillRect(xSchlaeger * 30, 11 * 30 + 20, 90, 10, Color.orange);
+            }
             double action = runAction( xBall,  yBall,  xSchlaeger,  xV,  yV);
             if (action < -0.3) {
                 xSchlaeger--;
@@ -145,16 +155,23 @@ public class MainFrame extends JFrame {
                 if (xSchlaeger == xBall || xSchlaeger == xBall - 1 || xSchlaeger == xBall - 2) {
                     //positive reward
                     learn(xBall, yBall, xSchlaeger, xV, yV, 1);
-                    System.out.println("positive reward");
+                    score++;
+
+                    System.out.println("score = " + score);
+
+                    //System.out.println("positive reward");
                 } else {
                     //negative reward
+                    score--;
+
+                    System.out.println("score = " + score);
                     learn(xBall, yBall, xSchlaeger, xV, yV, -1);
-                    System.out.println("negative reward");
+                   // System.out.println("negative reward");
                 }
             } else {
                 //nix reward
                 learn(xBall, yBall, xSchlaeger, xV, yV, 0);
-                System.out.println("no reward");
+                //System.out.println("no reward");
             }
 
             try {

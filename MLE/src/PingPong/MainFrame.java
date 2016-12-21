@@ -29,6 +29,7 @@ public class MainFrame extends JFrame {
     public static int actualYV;
     public static double alpha = 0.01;
     public static double gamma = 0.9;
+    public static int trainingSteps = 10000;
 
 
     public MainFrame(String[] args) {
@@ -73,7 +74,7 @@ public class MainFrame extends JFrame {
             xR = 1;
         }
         if (yV == 1) {
-            xV = 1;
+            yR = 1;
         }
         double QAfterAction = Q[xBall][yBall][xSchlaeger][xR][yR];
         double newQ = actualQ + alpha *(reward + gamma * (QAfterAction - actualQ));
@@ -86,42 +87,27 @@ public class MainFrame extends JFrame {
     }
 
     public double runAction(int xBall, int yBall, int xSchlaeger, int xV, int yV){
-
-    	//Calculate the new Position the Ball will take when action is run.
-    	int newXBall = xBall + xV;
-    	int newYBall = yBall + yV;
     	
-        int xR = 0;
-        int yR = 0;
-    	
-    	if (newXBall > 9 || newXBall < 1) {
-            xR = -xV;
-        }
-        if (newYBall > 10 || newYBall < 1) {
-            yV = -yV;
-        }
-
-        if (xR == -1) {
-            xR = 0;
-        }
-        if (yV == -1) {
-            yR = 0;
-        }
-        //save the actual state
         actualXBall = xBall;
         actualYBall = yBall;
         actualXSchlaeger = xSchlaeger;
-        actualXV = xR;
-        actualYV = yR;
-        
-        double rewardLeft = Q[newXBall][newYBall][xSchlaeger][xR][yR];
-        double rewardRight = Q[newXBall][newYBall][xSchlaeger][xR][yR];
+        actualXV = xV;
+        actualYV = yV;
+        if(actualXV == -1){
+        	actualXV = 0;
+        }
+        if(actualYV == -1){
+        	actualYV = 0;
+        }
+
+        double rewardLeft = Q[actualXBall][actualYBall][xSchlaeger][actualXV][actualYV];
+        double rewardRight = Q[actualXBall][actualYBall][xSchlaeger][actualXV][actualYV];
         
         if(xSchlaeger != 0){ //only go left, if it is possible
-        	rewardLeft = Q[newXBall][newYBall][xSchlaeger-1][xR][yR];
+        	rewardLeft = Q[actualXBall][actualYBall][xSchlaeger-1][actualXV][actualYV];
         }
         if(xSchlaeger < 9){ //only go right, if it is possible
-        	rewardRight = Q[newXBall][newYBall][xSchlaeger+1][xR][yR];
+        	rewardRight = Q[actualXBall][actualYBall][xSchlaeger+1][actualXV][actualYV];;
         }        
         if (rewardLeft > rewardRight)
         {
@@ -139,7 +125,7 @@ public class MainFrame extends JFrame {
         int score = 0;
 
         while (!stop) {
-            if(counter>1000) {
+            if(counter > trainingSteps) {
                 inputOutput.fillRect(0, 0, imageWidth, imageHeight, Color.black);
                 inputOutput.fillRect(xBall * 30, yBall * 30, 30, 30, Color.green);
                 inputOutput.fillRect(xSchlaeger * 30, 11 * 30 + 20, 90, 10, Color.orange);
@@ -186,14 +172,17 @@ public class MainFrame extends JFrame {
                 learn(xBall, yBall, xSchlaeger, xV, yV, 0);
             }
 
-            try {
-                Thread.sleep(100);                 //1000 milliseconds is one second.
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
+            if (counter > trainingSteps){
+            	   try {
+                       Thread.sleep(100);                 //1000 milliseconds is one second.
+                   } catch (InterruptedException ex) {
+                       Thread.currentThread().interrupt();
+                   }
 
-            repaint();
-            validate();
+                   repaint();
+                   validate();
+            }
+         
         }
 
         setVisible(false);

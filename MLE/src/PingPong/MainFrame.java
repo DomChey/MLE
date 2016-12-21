@@ -65,7 +65,7 @@ public class MainFrame extends JFrame {
     public void learn(int xBall, int yBall, int xSchlaeger, int xV, int yV, int reward) {
     	
     	//Get QValue for saved state
-    	double actualQ = Q[actualXBall][actualYBall][actualXSchlaeger][actualXV][actualYV];
+    	double actualQ = Q[actualXBall][actualYBall][xSchlaeger][actualXV][actualYV];
 
         int xR = 0;
         int yR = 0;
@@ -78,7 +78,7 @@ public class MainFrame extends JFrame {
         double QAfterAction = Q[xBall][yBall][xSchlaeger][xR][yR];
         double newQ = actualQ + alpha *(reward + gamma * (QAfterAction - actualQ));
         
-        Q[actualXBall][actualYBall][actualXSchlaeger][actualXV][actualYV] = newQ;
+        Q[actualXBall][actualYBall][xSchlaeger][actualXV][actualYV] = newQ;
         /* Qt=Qt+α(r t+γ maxat (Qt+1)−Qt)
        α∈[0..1]ist Lernrate z.B.α=0.01
        γ∈[0..1]ist Discountfaktor
@@ -87,13 +87,25 @@ public class MainFrame extends JFrame {
 
     public double runAction(int xBall, int yBall, int xSchlaeger, int xV, int yV){
 
+    	//Calculate the new Position the Ball will take when action is run.
+    	int newXBall = xBall + xV;
+    	int newYBall = yBall + yV;
+    	
         int xR = 0;
         int yR = 0;
-        if (xV == 1) {
-            xR = 1;
+    	
+    	if (newXBall > 9 || newXBall < 1) {
+            xR = -xV;
         }
-        if (yV == 1) {
-            yR = 1;
+        if (newYBall > 10 || newYBall < 1) {
+            yV = -yV;
+        }
+
+        if (xR == -1) {
+            xR = 0;
+        }
+        if (yV == -1) {
+            yR = 0;
         }
         //save the actual state
         actualXBall = xBall;
@@ -102,22 +114,21 @@ public class MainFrame extends JFrame {
         actualXV = xR;
         actualYV = yR;
         
+        double rewardLeft = Q[newXBall][newYBall][xSchlaeger][xR][yR];
+        double rewardRight = Q[newXBall][newYBall][xSchlaeger][xR][yR];
         
-        if(xSchlaeger == 0){ //Wir koennen nur nach rechts. Links ist die Wand.
-        	return 1;
+        if(xSchlaeger != 0){ //only go left, if it is possible
+        	rewardLeft = Q[newXBall][newYBall][xSchlaeger-1][xR][yR];
         }
-        if(xSchlaeger >= 9){ //wir koennen nur nach links. Rechts ist die Wand.
-        	return -1; 
-        }
-         double rewardLeft = Q[xBall][yBall][xSchlaeger-1][xR][yR];
-         double rewardRight = Q[xBall][yBall][xSchlaeger+1][xR][yR];
-           // System.out.println("rewardRight: "+ rewardRight);
+        if(xSchlaeger < 9){ //only go right, if it is possible
+        	rewardRight = Q[newXBall][newYBall][xSchlaeger+1][xR][yR];
+        }        
         if (rewardLeft > rewardRight)
         {
         	return -1;
         } else if (rewardRight > rewardLeft){
         	return 1;
-        }else{
+        }else{ //if the reward is the same for both actions, take one at random
         	return (2.0 * Math.random() - 1.0);
         }
     }
@@ -140,13 +151,12 @@ public class MainFrame extends JFrame {
             if (action > 0.3) {
                 xSchlaeger++;
             }
-            //Prüfen wir in run Action schon ab.
-//            if (xSchlaeger < 0) {
-//                xSchlaeger = 0;
-//            }
-//            if (xSchlaeger > 9) {
-//                xSchlaeger = 9;
-//            }
+            if (xSchlaeger < 0) {
+                xSchlaeger = 0;
+            }
+            if (xSchlaeger > 9) {
+                xSchlaeger = 9;
+            }
 
             xBall += xV;
             yBall += yV;
@@ -163,21 +173,17 @@ public class MainFrame extends JFrame {
                     learn(xBall, yBall, xSchlaeger, xV, yV, 1);
                     score++;
                     counter++;
-                    System.out.println("score = " + score);
-
-                    //System.out.println("positive reward");
+                    System.out.println(counter + ": score = " + score);
                 } else {
                     //negative reward
                     score--;
                     counter++;
-                    System.out.println("score = " + score);
+                    System.out.println(counter + ": score = " + score);
                     learn(xBall, yBall, xSchlaeger, xV, yV, -1);
-                   // System.out.println("negative reward");
                 }
             } else {
                 //nix reward
                 learn(xBall, yBall, xSchlaeger, xV, yV, 0);
-                //System.out.println("no reward");
             }
 
             try {

@@ -29,7 +29,7 @@ public class MainFrame extends JFrame {
     public static int actualYV;
     public static double alpha = 0.01;
     public static double gamma = 0.9;
-    public static int trainingSteps = 10000;
+    public static int trainingSteps = 1000;
 
 
     public MainFrame(String[] args) {
@@ -77,7 +77,7 @@ public class MainFrame extends JFrame {
             yR = 1;
         }
         double QAfterAction = Q[xBall][yBall][xSchlaeger][xR][yR];
-        double newQ = actualQ + alpha *(reward + gamma * (QAfterAction - actualQ));
+        double newQ = actualQ + alpha *(reward + gamma * QAfterAction - actualQ);
         
         Q[actualXBall][actualYBall][xSchlaeger][actualXV][actualYV] = newQ;
         /* Qt=Qt+α(r t+γ maxat (Qt+1)−Qt)
@@ -164,6 +164,7 @@ public class MainFrame extends JFrame {
                     //negative reward
                     score--;
                     counter++;
+                    System.out.println("DUMM");
                     System.out.println(counter + ": score = " + score);
                     learn(xBall, yBall, xSchlaeger, xV, yV, -1);
                 }
